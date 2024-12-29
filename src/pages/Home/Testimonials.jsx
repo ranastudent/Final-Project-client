@@ -1,6 +1,7 @@
 import SectionTitle from "../../components/sectionTitle/SectionTitle";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { FaHandHoldingHeart } from "react-icons/fa";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -36,6 +37,11 @@ const Testimonials = () => {
                                                 value={review.rating}
                                                 readOnly
                                           />
+                                          <div className="flex my-6 text-2xl">
+                                          <FaHandHoldingHeart />
+                                          <FaHandHoldingHeart />
+
+                                          </div>
                                           <p className="py-8">{review.details}</p>
                                           <h3 className="text-2xl text-orange-400">{review.name}</h3>
                                     </div>
