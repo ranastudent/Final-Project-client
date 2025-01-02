@@ -3,32 +3,43 @@ import { NavLink } from 'react-router-dom';
 import '../../../style/active.css'
 import { useContext } from 'react';
 import { AuthContext } from '../../../providers/AuthProvider';
+import { HiMiniShoppingCart } from "react-icons/hi2";
+import useCart from '../../../Hooks/useCart';
 
 const Navbar = () => {
       const { user, logOut } = useContext(AuthContext)
-      const handleLogout = ()=>{
+      const [cart] = useCart()
+      const handleLogout = () => {
             logOut()
-            .then(()=>{
+                  .then(() => {
 
-            })
-            .catch(error=>{
-                  console.log(error)
-            })
+                  })
+                  .catch(error => {
+                        console.log(error)
+                  })
       }
       const navOption = <>
             <li><NavLink to={'/'}>Home</NavLink></li>
             <li><NavLink to={'/menu'}>Our Menu</NavLink></li>
             <li><NavLink to={'/order/salad'}>Order Food</NavLink></li>
             <li><NavLink to={'/secret'}>Secret</NavLink></li>
+            <li className='-mt-2'>
+                  <NavLink to='/dashboard/cart'>
+                        <button className="btn">
+                        <HiMiniShoppingCart className='mr-4'></HiMiniShoppingCart>
+                              <div className="badge badge-secondary">+{cart.length}</div>
+                        </button>
+                  </NavLink>
+            </li>
 
             {
                   user ? <>
-                        <span>{user?.displayName}</span>
+                        {/* <span>{user?.displayName}</span> */}
                         <button onClick={handleLogout} className="btn btn-ghost">Logout</button>
-                  </> : 
-                  <>
-                        <li><NavLink to={'/login'}>Login</NavLink></li>
-                  </>
+                  </> :
+                        <>
+                              <li><NavLink to={'/login'}>Login</NavLink></li>
+                        </>
             }
 
       </>
