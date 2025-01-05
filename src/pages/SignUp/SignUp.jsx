@@ -4,33 +4,47 @@ import { useForm } from "react-hook-form";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import SocialLogin from "../../components/SocialLogin/SocialLogin";
 
 
 const SignUp = () => {
+      const axiosPublic = useAxiosPublic()
       const { register, handleSubmit, reset, formState: { errors } } = useForm()
-      const {createUser, updateUserProfile} = useContext(AuthContext)
+      const { createUser, updateUserProfile } = useContext(AuthContext)
       const navigate = useNavigate()
       const onSubmit = (data) => {
             console.log(data)
             createUser(data.email, data.password)
-            .then(result =>{
-                  const loggedUser = result.user
-                  console.log(loggedUser)
-                  updateUserProfile(data.name, data.photoURL)
-                  .then(()=>{
-                        console.log("user profile info updated:")
-                        reset();
-                        Swal.fire({
-                              position: "top-end",
-                              icon: "success",
-                              title: "User created successfully.",
-                              showConfirmButton: false,
-                              timer: 1500
-                            });
-                        navigate('/')
+                  .then(result => {
+                        const loggedUser = result.user
+                        //  console.log(loggedUser)
+                        updateUserProfile(data.name, data.photoURL)
+                              .then(() => {
+                                    // create User Info into Database
+                                    const userInfo = {
+                                          name: data.name,
+                                          email: data.email,
+                                    }
+                                    axiosPublic.post('/users', userInfo)
+                                          .then(res => {
+                                                if (res.data.insertedId) {
+                                                      console.log('user added to database');
+                                                      reset();
+                                                      Swal.fire({
+                                                            position: "top-end",
+                                                            icon: "success",
+                                                            title: "User created successfully.",
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                      });
+                                                      navigate('/');
+                                                }
+                                          })
+
+                              })
+                              .catch(error => console.log(error))
                   })
-                  .catch(error=>console.log(error))
-            })
       }
 
       return (
@@ -60,7 +74,7 @@ const SignUp = () => {
                                                 <label className="label">
                                                       <span className="label-text">Photo URL</span>
                                                 </label>
-                                                <input type="text" {...register("photoURL", { required: true })}  placeholder="Photo URL" className="input input-bordered" />
+                                                <input type="text" {...register("photoURL", { required: true })} placeholder="Photo URL" className="input input-bordered" />
                                                 {errors.photoURL && <span className="text-red-600">Photo URL field is required</span>}
                                           </div>
                                           <div className="form-control">
@@ -101,7 +115,8 @@ const SignUp = () => {
 
                                           </div>
                                     </form>
-                                    <p><small>Already have an account? <Link to='/login'>Login here</Link></small></p>
+                                    <p className="px-6"><small>Already have an account? <Link to='/login'>Login here</Link></small></p>
+                                    <SocialLogin></SocialLogin>
                               </div>
                         </div>
                   </div>
