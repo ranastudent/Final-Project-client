@@ -15,6 +15,12 @@ import Cart from "../pages/Dashboard/Cart/Cart";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import AddItems from "../pages/Dashboard/AddItems/AddItems";
 import AdminRoute from "./AdminRoute";
+import ManageItem from "../pages/Dashboard/ManageItem/ManageItem";
+import UpdateItem from "../pages/Dashboard/UpdateItem/UpdateItem";
+import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
+import UserHome from "../pages/Dashboard/UserHome/UserHome";
+import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
 
 
   export  const router = createBrowserRouter([
@@ -52,9 +58,22 @@ import AdminRoute from "./AdminRoute";
             path: "dashboard",
             element:<PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
             children:[
+                  // User Only Route
                   {
                         path: "cart",
                         element:<Cart></Cart>
+                  },
+                  {
+                        path: "payment",
+                        element:<Payment></Payment>,
+                  },
+                  {
+                        path:"paymentHistory",
+                        element:<PaymentHistory></PaymentHistory>
+                  },
+                  {
+                        path:"userHome",
+                        element:<UserHome></UserHome>
                   },
 
                   //admins routes
@@ -63,9 +82,23 @@ import AdminRoute from "./AdminRoute";
                         element:<AdminRoute><AddItems></AddItems></AdminRoute>
                   },
                   {
+                        path:'manageItems',
+                        element:<AdminRoute><ManageItem></ManageItem></AdminRoute>
+                  },
+                  {
+                        path:'manageItems/updateItem/:id',
+                        element:<AdminRoute><UpdateItem></UpdateItem></AdminRoute>,
+                        loader: ({params}) => fetch(`http://localhost:5000/menu/${params.id}`)
+                  },
+                  {
                         path: "users",
                         element:<AdminRoute><AllUsers></AllUsers></AdminRoute>
                   },
+                  {
+                        path:"adminHome",
+                        element:<AdminRoute><AdminHome></AdminHome></AdminRoute>
+                  },
+                  
             ]
       },
     ]);
